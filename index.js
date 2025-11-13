@@ -36,7 +36,6 @@ async function run() {
         // Collections
         const billsCollection = db.collection('bills');
         const usersCollection = db.collection('users');
-        const myBillsCollection = db.collection('myBills');
 
         app.post('/users', async (req, res) => {
             try {
@@ -64,6 +63,20 @@ async function run() {
                 res.send(result);
             } catch (err) {
                 res.status(500).send({ message: err.message });
+            }
+        });
+
+        // 📄 Get single bill
+        app.get('/api/bills/:id', async (req, res) => {
+            try {
+                const bill = await billsCollection.findOne({
+                    _id: new ObjectId(req.params.id),
+                });
+                if (!bill)
+                    return res.status(404).send({ message: 'Bill not found' });
+                res.send(bill);
+            } catch (err) {
+                res.status(400).send({ message: err.message });
             }
         });
 
