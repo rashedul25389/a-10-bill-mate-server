@@ -79,6 +79,17 @@ async function run() {
                 res.status(400).send({ message: err.message });
             }
         });
+        // 📖 Get all bills (with optional category filters)
+        app.get('/api/bills', async (req, res) => {
+            try {
+                const { category } = req.query;
+                const query = category ? { category } : {};
+                const bills = await billsCollection.find(query).toArray();
+                res.status(200).send(bills);
+            } catch (err) {
+                res.status(500).send({ message: err.message });
+            }
+        });
 
         // ✅ Check MongoDB connection
         await client.db('admin').command({ ping: 1 });
